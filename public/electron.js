@@ -1,43 +1,52 @@
 const path = require('path');
-const { app, Menu, Tray, nativeImage, BrowserWindow } = require('electron');
+const { app, Menu, Tray, screen, nativeImage, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
+
+let win;
 let tray;
 
 function createWindow() {
     // Create the browser window.
-    const win = new BrowserWindow({
-        width: 400,
-        height: 300,
+    win = new BrowserWindow({
+        width: 300,
+        height: 400,
+        resizable: false,
+        frame: false,
+        show: false,
         webPreferences: {
-        nodeIntegration: true,
+            nodeIntegration: true,
+            contextIsolation: false,
+            type: 'toolbar',
         },
     });
 
-    // and load the index.html of the app.
-    // win.loadFile("index.html");
+    // Load our entrypoint
     win.loadURL(
         isDev
         ? 'http://localhost:3000'
         : `file://${path.join(__dirname, '../build/index.html')}`
     );
+
     // Open the DevTools.
     if (isDev) {
-        win.webContents.openDevTools({ mode: 'detach' });
+        // win.webContents.openDevTools({ mode: 'detach' });
     }
 }
 
 function createTrayIcon() {
     const icon = nativeImage.createFromDataURL(`http://localhost:3000/favicon.ico'`);
     tray = new Tray(icon);
-    const contextMenu = Menu.buildFromTemplate([
-        { label: 'Item1', type: 'radio' },
-    ]);
-
-    // tray.setContextMenu(contextMenu);
-    tray.setToolTip('This is my application.');
+    tray.setToolTip('xWOL');
 
     tray.on('click', () => {
-        console.log('tray clicked');
+        const { width: windowWidth, height: windowHeight } = win.getBounds();
+        const cursorPosition = screen.getCursorScreenPoint();
+        const { x, y } = cursorPosition;
+        const desiredX = x - windowWidth / 2;
+        const desiredY = y + 10; // Adjust this value based on your preference
+        // Set the window position below the taskbar balloon
+        win.isVisible() ? win.hide() : win.show();
+        win.setPosition(desiredX, desiredY);
     });
 }
 
@@ -45,8 +54,11 @@ function createTrayIcon() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then( () => {
-    createTrayIcon();
     createWindow();
+    createTrayIcon();
+    if(win.isVisible()) {
+        win.hide();
+    }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -61,5 +73,9 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
+        createTrayIcon();
+        if(win.isVisible()) {
+            win.hide();
+        }
     }
 });
