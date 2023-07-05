@@ -2,8 +2,6 @@ import './App.css';
 import React, {useState, useEffect} from 'react';
 import NavBar from './components/NavBar';
 import Device from './components/Device';
-import arp from 'arp-a';
-import nmap from 'node-nmap';
 
 function App() {
     const [devices, setDevices] = useState([]);

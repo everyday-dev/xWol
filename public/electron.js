@@ -1,6 +1,7 @@
 const path = require('path');
 const { app, Menu, Tray, screen, nativeImage, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
+const localDev = require('local-devices');
 
 let win;
 let tray;
@@ -59,6 +60,12 @@ app.whenReady().then( () => {
     if(win.isVisible()) {
         win.hide();
     }
+
+    // Retrieve the list of devices on the network
+    localDev({address: '192.168.4.0/24'}).then(devices => {
+        console.log(devices);
+    });
+
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
