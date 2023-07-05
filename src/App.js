@@ -7,15 +7,6 @@ function App() {
     const [devices, setDevices] = useState([]);
 
     useEffect(() => {
-        const getDevices = () => {
-            var nmapscan = new nmap.NmapScan('192.168.4.1/254', '');
-            nmapscan.on('complete', function(data){
-                console.log(data);
-                setDevices(data);
-            });
-        };
-
-        getDevices();
     }, [devices]);
 
     const buildDeviceList = () => {
