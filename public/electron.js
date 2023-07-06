@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, Menu, Tray, screen, nativeImage, BrowserWindow } = require('electron');
+const { app, Menu, Tray, screen, nativeImage, BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev');
 const localDev = require('local-devices');
 
@@ -15,9 +15,7 @@ function createWindow() {
         frame: false,
         show: false,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            type: 'toolbar',
+            preload: path.join(__dirname, 'preload.js')
         },
     });
 
@@ -51,21 +49,30 @@ function createTrayIcon() {
     });
 }
 
+async function getLocalDevices() {
+    // Retrieve the list of devices on the network
+    const devices = await localDev({address: '192.168.4.0/24'});
+    // Filter out the gateway
+    const gatewayIdx = devices.findIndex(device => device.name === '_gateway');
+    if(gatewayIdx > -1) {
+        devices.splice(gatewayIdx, 1);
+    }
+    // Return the device list
+    return devices;
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then( () => {
+    ipcMain.handle('get-local-devices', getLocalDevices);
+
     createWindow();
     createTrayIcon();
+
     if(win.isVisible()) {
         win.hide();
     }
-
-    // Retrieve the list of devices on the network
-    localDev({address: '192.168.4.0/24'}).then(devices => {
-        console.log(devices);
-    });
-
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

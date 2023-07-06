@@ -7,14 +7,20 @@ function App() {
     const [devices, setDevices] = useState([]);
 
     useEffect(() => {
-    }, [devices]);
+        const getLocalDevices = async () => {
+            const localDevices = await window.electronAPI.getLocalDevices();
+            setDevices(localDevices);
+        };
+
+        getLocalDevices();
+    }, []);
 
     const buildDeviceList = () => {
         var jsx = "";
 
         if(devices.length) {
             const renderedDeviceList = devices.map((device) => {
-                return(<Device device={{name: device.hostname, ip: device.ip, awake: device.awake}}/>);
+                return(<Device device={{name: device.name, ip: device.ip, mac: device.mac, awake: true}}/>);
             });
 
             jsx = (
