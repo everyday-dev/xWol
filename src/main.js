@@ -6,6 +6,18 @@ const localDev = require('local-devices');
 let win;
 let tray;
 
+async function getLocalDevices() {
+    // Retrieve the list of devices on the network
+    const devices = await localDev({address: '192.168.4.0/24'});
+    // Filter out the gateway
+    const gatewayIdx = devices.findIndex(device => device.name === '_gateway');
+    if(gatewayIdx > -1) {
+        devices.splice(gatewayIdx, 1);
+    }
+    // Return the device list
+    return devices;
+}
+
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
@@ -17,6 +29,10 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         },
+    });
+
+    win.on('blur', () => {
+        win.isVisible() ? win.hide() : null;
     });
 
     // Load our entrypoint
@@ -47,18 +63,6 @@ function createTrayIcon() {
         win.isVisible() ? win.hide() : win.show();
         win.setPosition(desiredX, desiredY);
     });
-}
-
-async function getLocalDevices() {
-    // Retrieve the list of devices on the network
-    const devices = await localDev({address: '192.168.4.0/24'});
-    // Filter out the gateway
-    const gatewayIdx = devices.findIndex(device => device.name === '_gateway');
-    if(gatewayIdx > -1) {
-        devices.splice(gatewayIdx, 1);
-    }
-    // Return the device list
-    return devices;
 }
 
 // This method will be called when Electron has finished

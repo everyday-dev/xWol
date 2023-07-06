@@ -1,0 +1,25 @@
+.Navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #481565;
+
+    padding: 0;
+    margin: 0;
+}
+
+.Navbar-left {
+    margin-left: 15px;
+    color: white;
+}
+
+.Navbar-title {
+    flex-grow: 1;
+    color: white;
+}
+
+.Navbar-right {
+    margin-right: 15px;
+    color: white;
+}

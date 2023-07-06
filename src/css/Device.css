@@ -1,58 +1,13 @@
-.App {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    border-radius: 4px;
-}
-
-.App-header {
-    height: 50px;
-}
-
-.App-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
-
-.navBar {
-    color: white;
-    background-color: #481565;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.deviceList {
-    padding-top: 10px;
-}
-
-.userMessage {
-    color: #757575;
-    flex-grow: 1;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .Device {
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    /* height: 60px; */
-
     border-radius: 4px;
     box-shadow: 0px 2px 3px 2px #75757560;
 
     padding-right: 10px;
+    padding-left: 10px;
     margin-left: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
@@ -93,6 +48,10 @@
     color: #757575;
 }
 
+.Device-action {
+    margin-right: 5px;
+}
+
 .connected {
     background-color: #00ff00;
 }
@@ -100,5 +59,3 @@
 .disconnected {
     background-color: #ff0000;
 }
-
-

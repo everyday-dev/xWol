@@ -1,50 +1,23 @@
-import './App.css';
-import React, {useState, useEffect} from 'react';
+import './css/App.css';
+import React from 'react';
 import NavBar from './components/NavBar';
-import Device from './components/Device';
+import Discover from './routes/Discover';
+import MyDevices from './routes/MyDevices';
+import AddDevice from './routes/AddDevice';
+import About from './routes/About';
+import {Route, Routes} from 'react-router-dom'
 
 function App() {
-    const [devices, setDevices] = useState([]);
-
-    useEffect(() => {
-        const getLocalDevices = async () => {
-            const localDevices = await window.electronAPI.getLocalDevices();
-            setDevices(localDevices);
-        };
-
-        getLocalDevices();
-    }, []);
-
-    const buildDeviceList = () => {
-        var jsx = "";
-
-        if(devices.length) {
-            const renderedDeviceList = devices.map((device) => {
-                return(<Device device={{name: device.name, ip: device.ip, mac: device.mac, awake: true}}/>);
-            });
-
-            jsx = (
-                <div className="deviceList">
-                    {renderedDeviceList}
-                </div>
-            )
-        }
-        else {
-            jsx = (
-                <div className="userMessage">
-                    <p>Press the '+' to discover new devices.</p>
-                </div>
-            );
-        }
-
-        return jsx;
-    };
-
     return (
         <div className="App">
-            <NavBar className="App-header" pageTitle="xWOL" leftNav="foo" rightNav="plus" />
+            <NavBar />
             <div className="App-content">
-                {buildDeviceList()}
+                <Routes>
+                    <Route path="/" element={<MyDevices />} />
+                    <Route path="/discover" element={<Discover />} />
+                    <Route path="/add" element={<AddDevice />} />
+                    <Route path="/about" element={<About />} />
+                </Routes>
             </div>
         </div>
     );

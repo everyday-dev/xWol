@@ -1,0 +1,41 @@
+.App {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.App-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.navBar {
+    color: white;
+    background-color: #481565;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    height: 65px;
+}
+
+.deviceList {
+    padding-top: 10px;
+}
+
+.userMessage {
+    color: #757575;
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
