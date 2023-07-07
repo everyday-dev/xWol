@@ -2,9 +2,12 @@ const path = require('path');
 const { app, Menu, Tray, screen, nativeImage, BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev');
 const localDev = require('local-devices');
+const Store = require('electron-store');
 
 let win;
 let tray;
+const configStore = new Store();
+let devices = [];
 
 async function getLocalDevices() {
     // Retrieve the list of devices on the network
@@ -16,6 +19,16 @@ async function getLocalDevices() {
     }
     // Return the device list
     return devices;
+}
+
+async function addDevice(e, device) {
+    // Add the device to our config
+    devices.push(device);
+    configStore.set('devices', devices);
+}
+
+async function getConfiguredDevices() {
+    return configStore.get('devices', []);
 }
 
 function createWindow() {
@@ -69,7 +82,14 @@ function createTrayIcon() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then( () => {
+    // Read out our device config
+    configStore.delete('devices');
+    devices = configStore.get('devices', []);
+
+    // Set up our IPC handlers
     ipcMain.handle('get-local-devices', getLocalDevices);
+    ipcMain.handle('add-device', addDevice);
+    ipcMain.handle('get-configured-devices', getConfiguredDevices);
 
     createWindow();
     createTrayIcon();

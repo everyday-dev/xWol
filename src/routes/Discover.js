@@ -24,7 +24,7 @@ const Discover = () => {
 
         if(devices.length > 0) {
             const renderedDeviceList = devices.map((device) => {
-                return(<DiscoveredDevice key={device.ip} device={device} onAdd={deviceAddCallback}/>);
+                return(<DiscoveredDevice key={device.mac} device={device} onAdd={deviceAddCallback}/>);
             });
 
             jsx = (

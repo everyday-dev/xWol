@@ -26,10 +26,6 @@
     height: 65px;
 }
 
-.deviceList {
-    padding-top: 10px;
-}
-
 .userMessage {
     color: #757575;
     flex-grow: 1;

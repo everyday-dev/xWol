@@ -9,6 +9,7 @@ import './css/Device.css';
 import './css/Discover.css';
 import './css/Navbar.css';
 import './css/AddDevice.css';
+import './css/MyDevices.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

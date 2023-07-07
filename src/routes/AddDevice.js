@@ -1,5 +1,5 @@
 import {React, useEffect, useState} from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 const AddDevice = () => {
     const [deviceName, setDeviceName] = useState("");
@@ -8,6 +8,7 @@ const AddDevice = () => {
     const [isValidIP, setIsValidIP] = useState(false);
     const [isValidMAC, setIsValidMAC] = useState(false);
     const location  = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const rcvdDevice = location.state.data;
@@ -43,7 +44,7 @@ const AddDevice = () => {
         setIsValidMAC(isValidMacAddress(e.target.value));
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Construct a device object
@@ -53,18 +54,21 @@ const AddDevice = () => {
             mac: deviceMAC
         };
 
-        if(isValidIPv4Address(device.ip)) {
+        if(!isValidIPv4Address(device.ip)) {
             setIsValidIP(isValidIPv4Address(device.ip));
             return;
         }
 
-        if(isValidMacAddress(device.mac)) {
+        if(!isValidMacAddress(device.mac)) {
             setIsValidMAC(isValidMacAddress(device.mac));
             return;
         }
 
+        console.log(`Submitting device: ${device.ip}`);
         // Use the electron API to send the device object to the main process
+        await window.electronAPI.addDevice(device);
 
+        navigate('/');
     }
 
     return (

@@ -19,8 +19,7 @@ const ConfiguredDevice = ({device}) => {
     );
 };
 
-const DiscoveredDevice = ({device, onAdd}) => {
-    const powerColor = !device.awake ? 'black' : '#75757560';
+const DiscoveredDevice = ({device}) => {
     const name = (device.name === '?') ? device.ip : device.name;
 
     return(
@@ -31,7 +30,7 @@ const DiscoveredDevice = ({device, onAdd}) => {
             </div>
 
             <Link to='/add' state={{data:device}}>
-                <FeatherIcon className="Device-action" style={{cursor:'pointer', width:'16px', color:powerColor}} icon='plus' />
+                <FeatherIcon className="Device-action" style={{cursor:'pointer', width:'16px', color:'black'}} icon='plus' />
             </Link>
         </div>
     );
