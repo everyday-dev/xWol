@@ -1,0 +1,47 @@
+.AddDevice-form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.AddDevice-input {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+
+    :focus {
+        outline: none;
+    }
+}
+
+.AddDevice-input-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.AddDevice-input-field {
+    height: 30px;
+    font-size: 14px;
+    margin: 0;
+    padding: 4px;
+}
+
+.AddDevice-button {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.AddDevice-invalid {
+    border-color: red;
+}
