@@ -31,7 +31,8 @@
     height: 30px;
     font-size: 14px;
     margin: 0;
-    padding: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .AddDevice-button {

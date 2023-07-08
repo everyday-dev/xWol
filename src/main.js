@@ -3,6 +3,7 @@ const { app, Menu, Tray, screen, nativeImage, BrowserWindow, ipcMain } = require
 const isDev = require('electron-is-dev');
 const localDev = require('local-devices');
 const Store = require('electron-store');
+const Ping = require('ping');
 
 let win;
 let tray;
@@ -11,14 +12,24 @@ let devices = [];
 
 async function getLocalDevices() {
     // Retrieve the list of devices on the network
-    const devices = await localDev({address: '192.168.4.0/24'});
+    const localdevices = await localDev({address: '192.168.4.0/24'});
     // Filter out the gateway
-    const gatewayIdx = devices.findIndex(device => device.name === '_gateway');
+    const gatewayIdx = localdevices.findIndex(device => device.name === '_gateway');
     if(gatewayIdx > -1) {
-        devices.splice(gatewayIdx, 1);
+        localdevices.splice(gatewayIdx, 1);
     }
+
+    // Iterate over our devices list and remove those from the
+    // local devices array
+    const configuredDevices = await getConfiguredDevices();
+    configuredDevices.forEach(configuredDevice => {
+        const idx = localdevices.findIndex(device => device.mac === configuredDevice.mac);
+        if(idx > -1) {
+            localdevices.splice(idx, 1);
+        }
+    });
     // Return the device list
-    return devices;
+    return localdevices;
 }
 
 async function addDevice(e, device) {
@@ -29,6 +40,14 @@ async function addDevice(e, device) {
 
 async function getConfiguredDevices() {
     return configStore.get('devices', []);
+}
+
+async function isDeviceAwake(e, ip, timeout) {
+    const res = await Ping.promise.probe(ip, {
+        timeout: timeout,
+    });
+
+    return res.alive
 }
 
 function createWindow() {
@@ -45,7 +64,7 @@ function createWindow() {
     });
 
     win.on('blur', () => {
-        win.isVisible() ? win.hide() : null;
+        // win.isVisible() ? win.hide() : null;
     });
 
     // Load our entrypoint
@@ -90,6 +109,7 @@ app.whenReady().then( () => {
     ipcMain.handle('get-local-devices', getLocalDevices);
     ipcMain.handle('add-device', addDevice);
     ipcMain.handle('get-configured-devices', getConfiguredDevices);
+    ipcMain.handle('is-device-awake', isDeviceAwake);
 
     createWindow();
     createTrayIcon();
