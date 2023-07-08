@@ -4,15 +4,44 @@ const isDev = require('electron-is-dev');
 const localDev = require('local-devices');
 const Store = require('electron-store');
 const Ping = require('ping');
+const os = require('os');
 
 let win;
 let tray;
 const configStore = new Store();
 let devices = [];
 
+function getLocalIpAddress() {
+    const interfaces = os.networkInterfaces();
+
+    for (const interfaceName in interfaces) {
+        const interfaceDetails = interfaces[interfaceName];
+        for (const interfaceInfo of interfaceDetails) {
+            if (interfaceInfo.family === 'IPv4' && !interfaceInfo.internal) {
+                return interfaceInfo.address;
+            }
+        }
+    }
+
+    return null;
+}
+
+function getNetworkBaseAddress(ipAddress, subnetPrefix) {
+    const ipAddressParts = ipAddress.split('.');
+    const subnetMask = ~(2 ** (32 - subnetPrefix) - 1);
+
+    const networkBaseParts = ipAddressParts.map((part, index) => {
+        const ipPart = parseInt(part, 10);
+        const subnetPart = subnetMask >>> (8 * (3 - index));
+        return ipPart & subnetPart;
+    });
+
+    return networkBaseParts.join('.');
+}
+
 async function getLocalDevices() {
     // Retrieve the list of devices on the network
-    const localdevices = await localDev({address: '192.168.4.0/24'});
+    const localdevices = await localDev({address: `${getNetworkBaseAddress(getLocalIpAddress(), 24)}/24`});
     // Filter out the gateway
     const gatewayIdx = localdevices.findIndex(device => device.name === '_gateway');
     if(gatewayIdx > -1) {
